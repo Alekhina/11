@@ -1,0 +1,74 @@
+#include <iostream>
+#include <cmath>
+
+
+void sort (int n, int a[]){
+    //bubble sort :)
+    int temp, i, j; 
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - i - 1; j++) {
+            if (a[j] > a[j+1]) {
+                temp = a[j];
+                a[j] = a[j+1];
+                a[j+1] = temp;
+            }
+        }
+    }
+}
+
+
+
+int min_length(int n, int *dist, int glob_dist){
+    int i;
+    int length[100];
+    bool occurrence_of_last[100]; 
+    
+    length[0] = 0;
+    length[1] = 0;
+    length[2] = dist[2];
+    occurrence_of_last[2] = false;
+    
+    for (i = 3 ; i < n-1 ; i++){
+        if (occurrence_of_last[i-1] == true){
+            length[i] = length[i-1] + dist[i];
+            occurrence_of_last[i] = false;
+        }
+        else{
+            if(length[i-1] > length[i-2] + dist[i]){
+                length[i] = length[i-1];
+                occurrence_of_last[i] = true;
+            }
+            else{
+                length[i] = length[i-2] +dist[i];
+                occurrence_of_last[i] = false;
+            }
+        }
+    }
+    
+    
+    return glob_dist - length[n-2];
+}
+
+
+int main()
+{
+    int n, i, glob_dist;
+    int a[100];
+    int dist[100];
+    int *d = &dist[0];
+    
+    n = 0;
+    while(std::cin >> a[n]){
+        n++;
+    }
+    
+    sort(n, a);
+    
+    for (i = 1 ; i < n ; i++){
+        dist[i] = a[i] - a[i-1];
+    }
+    glob_dist = a[n-1] - a[0];
+
+    std::cout << min_length(n, d, glob_dist);
+    return 0;
+}
